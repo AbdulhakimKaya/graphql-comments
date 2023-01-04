@@ -1,15 +1,18 @@
 const users = [
     {
         id: "1",
-        fullName: "Abdulhakim KAYA"
+        fullName: "Abdulhakim KAYA",
+        age: 20
     },
     {
         id: "2",
-        fullName: "Ömer Faruk DOĞAN"
+        fullName: "Ömer Faruk DOĞAN",
+        age: 21
     },
     {
         id: "3",
-        fullName: "Tunahan ÇELEBİ"
+        fullName: "Tunahan ÇELEBİ",
+        age: 22
     },
 ];
 
