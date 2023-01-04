@@ -1,9 +1,12 @@
 const {ApolloServer, gql} = require('apollo-server');
-const {ApolloServerPluginLandingPageGraphQLPlayground} = require('apollo-server-core')
+const {ApolloServerPluginLandingPageGraphQLPlayground} = require('apollo-server-core');
+// const {nanoid} = require('nanoid');
+const uid = function(){ return Date.now().toString(36) + Math.random().toString(36).substr(2); }
 
 const {users, posts, comments} = require('./data')
 
 const typeDefs = gql`
+    # User
     type User {
         id: ID!
         fullName: String!
@@ -11,6 +14,11 @@ const typeDefs = gql`
         comments: [Comment!]!
     }
     
+    input CreateUserInput {
+        fullName: String!
+    }
+    
+    # Post
     type Post {
         id: ID!
         title: String!
@@ -19,12 +27,24 @@ const typeDefs = gql`
         comments: [Comment!]!
     }
     
+    input CreatePostInput {
+        title: String!, 
+        user_id: ID!
+    }
+    
+    # Comment
     type Comment {
         id: ID!
         text: String!
         post_id: ID!
         user: User!
         post: Post!
+    }
+    
+    input CreateCommentInput {
+        text: String!, 
+        post_id: ID!, 
+        user_id: ID!
     }
     
     type Query {
@@ -40,9 +60,49 @@ const typeDefs = gql`
         comments: [Comment!]!
         comment(id: ID!): Comment!
     }
+    
+    type Mutation {
+        createUser(data: CreateUserInput!): User!
+        createPost(data: CreatePostInput!): Post!
+        createComment(data: CreateCommentInput!): Comment!
+    }
 `;
 
 const resolvers = {
+    Mutation: {
+        // veri çekme kullanım 1
+        createUser: (parent, {data}) => {
+            const user = {
+                id: uid(),
+                fullName: data.fullName,
+            }
+            users.push(user)
+
+            return user
+        },
+        // veri çekme kullanım 2
+        createPost: (parent, {data: {title, user_id}}) => {
+            const post = {
+                id: uid(),
+                title,
+                user_id,
+            }
+            posts.push(post)
+
+            return post
+        },
+        // veri çekme kullanım 3
+        createComment: (parent, {data}) => {
+            const comment = {
+                id: uid(),
+                ...data
+            }
+            comments.push(comment)
+
+            return comment
+        }
+    },
+
     Query: {
         // user
         users: () => users,
