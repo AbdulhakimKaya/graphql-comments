@@ -114,6 +114,7 @@ const resolvers = {
             const user = {
                 id: uid(),
                 fullName: data.fullName,
+                age: data.age,
             }
             users.push(user)
 
